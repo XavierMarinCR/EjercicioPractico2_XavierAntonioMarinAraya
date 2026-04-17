@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+    <head th:replace="~{general/fragmentos :: head}">
+        <title>Lista de Roles</title>
+    </head>
+
+    <body>
+        <!-- Header -->
+        <header th:replace="~{general/fragmentos :: header}"></header>
+
+        <div class="container mt-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Lista de Roles</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="r : ${roles}">
+                                <td th:text="${r.id}"></td>
+                                <td th:text="${r.nombre}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- Mensaje si no hay roles -->
+                    <div class="text-center p-2" th:if="${roles == null or roles.empty}">
+                        <span>No hay roles registrados</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Botón volver -->
+            <div class="mt-3 text-center">
+                <a th:href="@{/usuario/listado}" class="btn btn-secondary">
+                    Volver
+                </a>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer th:replace="~{general/fragmentos :: footer}"></footer>
+    </body>
+</html>

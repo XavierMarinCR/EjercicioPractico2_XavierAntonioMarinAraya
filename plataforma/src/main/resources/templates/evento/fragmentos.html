@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+    <head th:replace="~{general/fragmentos :: head}">
+        <title>Eventos</title>
+    </head>
+
+    <body>
+
+        <!-- AGREGAR EVENTO -->
+        <section th:fragment="agregar">
+            <div class="row py-4 mb-2 bg-light">
+                <div class="col-md-1"></div>
+                <div class="col-md-3">
+                    <button type="button"
+                            class="btn btn-primary"
+                            sec:authorize="hasRole('ADMIN')"
+                            data-bs-toggle="modal"
+                            data-bs-target="#agregarEventoModal">
+                        <i class="fa-solid fa-plus"></i> Agregar Evento
+                    </button>
+                </div>
+            </div>
+
+            <!-- MODAL AGREGAR -->
+            <div class="modal fade" id="agregarEventoModal" tabindex="-1">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title">
+                                <i class="fa-solid fa-calendar"></i> Agregar Evento
+                            </h5>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal">
+                            </button>
+                        </div>
+
+                        <form th:action="@{/evento/guardar}" method="post">
+                            <div class="modal-body">
+                                <input type="hidden" name="id"/>
+
+                                <div class="mb-3">
+                                    <label>Nombre</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="nombre"
+                                           required/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Fecha</label>
+                                    <input type="date"
+                                           class="form-control"
+                                           name="fecha"
+                                           required/>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Cerrar
+                                </button>
+                                <button type="submit"
+                                        class="btn btn-primary">
+                                    Guardar
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LISTADO EVENTOS -->
+        <section th:fragment="listado" class="p-3">
+            <div class="row p-3">
+
+                <div class="col-md-9">
+                    <div class="card p-2">
+
+                        <div class="card-header">
+                            <h4>Listado de eventos</h4>
+                        </div>
+
+                        <div class="card-body">
+
+                            <div th:if="${eventos != null and !eventos.empty}">
+                                <table class="table table-striped table-hover">
+
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Fecha</th>
+                                            <th>Descripción</th>
+                                            <th>Capacidad</th>
+                                            <th>Estado</th>
+                                            <th sec:authorize="hasRole('ADMIN')"></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr th:each="e : ${eventos}">
+                                            <td th:text="${e.id}"></td>
+                                            <td th:text="${e.nombre}"></td>
+                                            <td th:text="${e.fecha}"></td>
+                                            <td th:text="${e.descripcion}"></td>
+                                            <td th:text="${e.capacidad}"></td>
+                                            <td>
+                                                <span th:if="${e.activo}">Activo</span>
+                                                <span th:unless="${e.activo}">Inactivo</span>
+                                            </td>
+                                            
+                                            <td sec:authorize="hasRole('ADMIN')">
+                                                <div class="d-flex">
+
+                                                    <a class="btn btn-warning me-2"
+                                                       th:href="@{/evento/modificar/{id}(id=${e.id})}">
+                                                        Editar
+                                                    </a>
+
+                                                    <form th:action="@{/evento/eliminar}"
+                                                          method="post"
+                                                          style="display:inline;">
+                                                        <input type="hidden"
+                                                               name="id"
+                                                               th:value="${e.id}"/>
+                                                        <button type="submit"
+                                                                class="btn btn-danger">
+                                                            Eliminar
+                                                        </button>
+                                                    </form>
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                            <div class="text-center p-2"
+                                 th:if="${eventos == null or eventos.empty}">
+                                <span>No hay eventos registrados</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TOTAL EVENTOS -->
+                <div class="col-md-3">
+                    <div class="card text-center bg-success text-white mb-3">
+                        <div class="card-body">
+                            <h3>Total Eventos</h3>
+                            <h4 class="fs-2">
+                                <i class="fas fa-calendar"></i> [[${totalEventos}]]
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- EDITAR EVENTO -->
+        <section th:fragment="editar">
+            <div class="row">
+                <div class="col-md-2"></div>
+
+                <div class="col-md-8">
+                    <form method="POST"
+                          th:action="@{/evento/guardar}"
+                          th:object="${evento}"
+                          class="was-validated">
+
+                        <input type="hidden" name="id" th:value="${evento.id}"/>
+
+                        <div class="row py-4 mb-4 bg-light">
+
+                            <div class="col-md-4 d-grid">
+                                <a th:href="@{/evento/listado}" class="btn btn-primary">
+                                    Regresar
+                                </a>
+                            </div>
+
+                            <div class="col-md-4 d-grid">
+                                <button type="submit" class="btn btn-success">
+                                    Guardar
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Editar Evento</h4>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="mb-3">
+                                    <label>Nombre</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           th:field="*{nombre}"
+                                           required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Fecha</label>
+                                    <input type="date"
+                                           class="form-control"
+                                           th:field="*{fecha}"
+                                           required>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </body>
+</html>

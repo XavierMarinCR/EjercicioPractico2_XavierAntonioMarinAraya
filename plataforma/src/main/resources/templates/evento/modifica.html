@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:replace="~{general/fragmentos :: head}">
+    <title>Eventos</title>
+</head>
+
+<body>
+
+    <header th:replace="~{general/fragmentos :: header}"/>
+
+    <!-- EDITAR EVENTO -->
+    <section th:replace="~{evento/fragmentos :: editar}"/>
+
+    <!-- MENSAJES -->
+    <section th:replace="~{general/fragmentos :: mostrarToast}"/>
+
+    <footer th:replace="~{general/fragmentos :: footer}"/>
+
+</body>
+</html>

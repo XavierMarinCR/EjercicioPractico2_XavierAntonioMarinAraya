@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+     <head th:replace="~{general/fragmentos :: head}">
+         <title>Formulario</title>
+     </head>
+    <body>
+        <header th:replace="~{general/fragmentos :: header}"/>
+
+                <!-- Toast -->
+        <section th:replace="~{general/plantilla :: mostrarToast}"></section>
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+
+                    <div class="card mt-4">
+
+                        <div class="card-header">
+                            <h4>Formulario de Usuario</h4>
+                        </div>
+
+                        <div class="card-body">
+
+                            <form th:action="@{/usuario/guardar}" th:object="${usuario}" method="post">
+
+                                <!-- ID oculto (sirve para editar también) -->
+                                <input type="hidden" th:field="*{id}"/>
+
+                                <!-- Nombre -->
+                                <div class="mb-3">
+                                    <label>Nombre</label>
+                                    <input type="text" th:field="*{nombre}" class="form-control" required/>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label>Email</label>
+                                    <input type="email" th:field="*{email}" class="form-control" required/>
+                                </div>
+
+                                <!-- Rol -->
+                                <div class="mb-3">
+                                    <label>Rol</label>
+                                    <select th:field="*{rol}" class="form-control">
+                                        <option th:each="r : ${roles}"
+                                                th:value="${r.id}"
+                                                th:text="${r.nombre}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Botones -->
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success">
+                                        Guardar
+                                    </button>
+
+                                    <a th:href="@{/usuario/listado}" class="btn btn-secondary">
+                                        Cancelar
+                                    </a>
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        
+        <footer th:replace="~{general/fragmentos :: footer}"/>
+    </body>
+</html>
